@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData">
+    <serverData>
+      <paths name="MatBot (fe95203c-175a-4db9-b225-ed8e6bba9ffe)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/home/pi/mfsy_workspace" local="$PROJECT_DIR$" />
+          </mappings>
+          <excludedPaths>
+            <excludedPath local="true" path="$PROJECT_DIR$/src/build" />
+            <excludedPath local="true" path="$PROJECT_DIR$/src/build-local" />
+            <excludedPath local="true" path="$PROJECT_DIR$/build" />
+          </excludedPaths>
+        </serverdata>
+      </paths>
+    </serverData>
+  </component>
+</project>
