@@ -1,0 +1,2 @@
+float32 horizontalCenter
+float32[5] verticalCenters

@@ -1,2 +1,2 @@
-float32 leftMotorSpeed
-float32 rightMotorSpeed
+float32 linearSpeed
+float32 angularSpeed
