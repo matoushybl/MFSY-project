@@ -8,10 +8,10 @@ add_compile_options(-std=c++17)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  cv_bridge
-  roscpp
-  sensor_msgs
-  std_msgs
+        cv_bridge
+        roscpp
+        sensor_msgs
+        std_msgs
         message_generation
 )
 
@@ -205,7 +205,7 @@ include_directories(
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
-set(SOURCES src/main.cpp)
+set(SOURCES src/main.cpp src/CameraNode.cpp include/utils.h)
 
 find_package(OpenCV 3.2.0 REQUIRED)
 
