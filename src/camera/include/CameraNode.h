@@ -37,6 +37,8 @@ private:
 
     cv::Mat preprocessImage(const cv::Mat &image);
     CentersAndWidths processImage(const cv::Mat &image);
+
+    uint64_t sqnCounter = 0;
 };
 
 

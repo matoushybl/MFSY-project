@@ -15,24 +15,33 @@ CameraNode::CameraNode(ros::NodeHandle &handle) {
 
     locationPublisher = handle.advertise<camera::LinePosition>(topics::camera::LINE_POSITIONS, 0);
 
-    loopTimer = handle.createTimer(ros::Duration(0.02), &CameraNode::onLoopTick, this);
+    loopTimer = handle.createTimer(ros::Duration(0.05), &CameraNode::onLoopTick, this);
 
     cam = cv::VideoCapture(0);
-
-    cam.set(cv::CAP_PROP_FRAME_WIDTH, 640);
-    cam.set(cv::CAP_PROP_FRAME_HEIGHT, 480);
 
     if (!cam.isOpened()) {
         throw std::runtime_error("Failed to open camera.");
     }
 
-    system("v4l2-ctl -d 0 -c auto_exposure=1 -c exposure_time_absolute=50");
+    cam.set(cv::CAP_PROP_FRAME_WIDTH, 640);
+    cam.set(cv::CAP_PROP_FRAME_HEIGHT, 480);
+
+//    system("v4l2-ctl -d 0 -c auto_exposure=1 -c exposure_time_absolute=50");
 }
 
 void CameraNode::onLoopTick(const ros::TimerEvent &) {
     cv::Mat rawImage;
     cam >> rawImage;
-    rawImagePublisher.publish(createImageMsg(rawImage).toImageMsg());
+
+    std_msgs::Header header;
+    header.stamp = ros::Time::now();
+
+    cv_bridge::CvImage outputImage;
+    outputImage.header = header;
+    outputImage.encoding = sensor_msgs::image_encodings::BGR8;
+    outputImage.image = rawImage;
+
+    rawImagePublisher.publish(outputImage.toImageMsg());
 
     const auto preprocessedImage = preprocessImage(rawImage);
     imagePublisher.publish(createImageMsg(preprocessedImage).toImageMsg());
@@ -46,6 +55,8 @@ void CameraNode::onLoopTick(const ros::TimerEvent &) {
     }
 
     locationPublisher.publish(positionMsg);
+
+    sqnCounter++;
 }
 
 CentersAndWidths CameraNode::processImage(const cv::Mat &image) {
@@ -91,16 +102,16 @@ CentersAndWidths CameraNode::processImage(const cv::Mat &image) {
 }
 
 cv::Mat CameraNode::preprocessImage(const cv::Mat &image) {
-    cv::Mat bw;
-    cv::cvtColor(image, bw, cv::COLOR_RGB2GRAY);
-    cv::threshold(bw, bw, 127, 255, cv::ThresholdTypes::THRESH_BINARY);
-
     cv::Size targetSize(64, 48);
     cv::Mat resized;
-    cv::resize(bw, resized, targetSize);
+    cv::resize(image, resized, targetSize);
 
     cv::transpose(resized, resized);
     cv::flip(resized, resized, 1);
 
-    return resized;
+    cv::Mat bw;
+    cv::cvtColor(resized, bw, cv::COLOR_RGB2GRAY);
+    cv::threshold(bw, bw, 80, 255, cv::ThresholdTypes::THRESH_BINARY);
+
+    return bw;
 }
