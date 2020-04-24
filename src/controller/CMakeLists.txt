@@ -209,7 +209,7 @@ include_directories(
 #add_subdirectory(deps/fuzzylite)
 find_library (FuzzyLiteLibrary fuzzylite-debug REQUIRED)
 
-set(SOURCES src/main.cpp)
+set(SOURCES src/main.cpp include/ControllerNode.cpp include/ControllerNode.h)
 
 add_executable(controller_node ${SOURCES})
 target_include_directories(controller_node PRIVATE include)
